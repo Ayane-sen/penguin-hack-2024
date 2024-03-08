@@ -4,13 +4,46 @@ import SelectUnitComponent from "./components/SelectUnit";
 import LevelComponent from "./components/Level";
 import CommentComponent from "./components/Comment";
 import ButtonComponent from "./components/Button";
-const user = {
-  id: "1",
+import { useEffect, useState } from "react";
+import { auth } from "./firebase";
+import { ClassType, Student } from "./types";
+const user: Student = {
+  id: 1,
   name: "user1",
-};
+  memo: "",
+} as Student;
 
 const Class = () => {
   const params = useParams();
+  const [classInfo, setClassInfo] = useState<ClassType>();
+
+  const getClass = async () => {
+    const token = await auth.currentUser?.getIdToken();
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const res = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/students/${params["id"]}/classes/latest`,
+      {
+        headers,
+      }
+    );
+    if (!res.ok) {
+      console.error("データの取得に失敗しました。");
+    }
+
+    const data = await res.json();
+
+    setClassInfo(data as ClassType);
+  };
+
+  useEffect(() => {
+    (async () => {
+      await getClass();
+    })();
+  }, []);
+
   return (
     <div
       style={{
@@ -36,8 +69,8 @@ const Class = () => {
           gap: "10px",
         }}
       >
-        <div>次回: </div>
-        <div>次回小テスト</div>
+        <div>次回: {classInfo?.title}</div>
+        <div>次回小テスト{classInfo?.test}</div>
         <div>
           宿題内容
           <div
@@ -47,13 +80,15 @@ const Class = () => {
               width: "120px",
               margin: "0 auto",
             }}
-          ></div>
+          >
+            {classInfo?.homework}
+          </div>
         </div>
         <div>
           今日の学習内容
           <div>
-            <SelectUnitComponent />
-            <CommentComponent />
+            <SelectUnitComponent selected="" setValue={(value) => {}} />
+            <CommentComponent memo="" />
           </div>
         </div>
         <div>

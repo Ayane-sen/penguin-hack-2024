@@ -2,7 +2,11 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-export default function FullWidthTextField() {
+type Props = {
+  memo: string;
+};
+
+const FullWidthTextField: React.FC<Props> = ({ memo }) => {
   return (
     <Box
       sx={{
@@ -10,7 +14,16 @@ export default function FullWidthTextField() {
         maxWidth: "100%",
       }}
     >
-      <TextField fullWidth multiline rows={20} label="memo" id="memo" />
+      <TextField
+        fullWidth
+        multiline
+        rows={20}
+        label="memo"
+        id="memo"
+        value={memo}
+      />
     </Box>
   );
-}
+};
+
+export default FullWidthTextField;

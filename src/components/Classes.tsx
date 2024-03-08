@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { ClassListItem } from "../types";
+import { ClassType } from "../types";
 
 type Props = {
-  classes: Array<ClassListItem>;
+  classes: Array<ClassType>;
 };
 
 const ClassList: FC<Props> = ({ classes }) => {

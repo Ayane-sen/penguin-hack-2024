@@ -13,3 +13,31 @@ export type ClassListItem = {
   at: string;
   comprehension: number;
 };
+
+export type BaseClass = {
+  title: string;
+  test?: string;
+  homework?: string;
+  activityType?: string;
+  activity?: string;
+  comprehension?: string;
+};
+
+export type ClassInsert = BaseClass;
+
+export type ClassType = {
+  id: number;
+  createdAt: number;
+  updatedAt: number;
+} & BaseClass;
+
+export type BaseStudent = {
+  name: string;
+  memo: string;
+};
+
+export type Student = {
+  id: number;
+} & BaseStudent;
+
+export type StudentInsert = BaseStudent;

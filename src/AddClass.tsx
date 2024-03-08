@@ -1,16 +1,50 @@
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import UserComponent from "./components/User";
 import SelectUnitComponent from "./components/SelectUnit";
 import CommentComponent from "./components/Comment";
 import SingleButtonComponent from "./components/SingleButton";
-
-const user = {
-  id: "1",
-  name: "user1",
-};
+import BackButtonComponent from "./components/BackButton";
+import { ClassInsert, Student as StudentType } from "./types";
+import { Box, TextField } from "@mui/material";
+import { memo, useState } from "react";
+import { auth } from "./firebase";
+import { validateHeaderValue } from "http";
 
 const AddClass = () => {
   const params = useParams();
+
+  const [student, setStudent] = useState<StudentType>();
+  const [postData, setPostData] = useState<ClassInsert>({
+    title: "",
+    test: "",
+    homework: "",
+    activityType: "",
+    activity: "",
+    comprehension: "",
+  });
+
+  const getStudent = async () => {
+    const token = await auth.currentUser?.getIdToken();
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const res = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/students/${params["id"]}`,
+      {
+        headers,
+      }
+    );
+    if (!res.ok) {
+      console.error("データの取得に失敗しました。");
+    }
+
+    const data = await res.json();
+
+    console.log(data);
+
+    setStudent(data as StudentType);
+  };
+
   return (
     <div
       style={{
@@ -22,7 +56,7 @@ const AddClass = () => {
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <UserComponent user={user} />
+        {student && <UserComponent user={student} />}
         <SingleButtonComponent />
       </div>
       <div
@@ -38,11 +72,30 @@ const AddClass = () => {
       >
         <div>
           次回 :
-          <SelectUnitComponent />
+          <SelectUnitComponent
+            selected={postData.title}
+            setValue={(value) => {
+              setPostData({ ...postData, title: value });
+            }}
+          />
         </div>
         <div style={{ display: "flex" }}>
           次回小テスト :
-          <CommentComponent />
+          <Box
+            sx={{
+              width: 500,
+              maxWidth: "100%",
+            }}
+          >
+            <TextField
+              fullWidth
+              multiline
+              rows={5}
+              label="小テスト"
+              id="test"
+              value={postData.test}
+            />
+          </Box>
         </div>
         <div>
           宿題内容

@@ -32,6 +32,11 @@ const names = [
   "単元１０",
 ];
 
+type Props = {
+  selected: string;
+  setValue: (value: string) => void;
+};
+
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
     fontWeight:
@@ -41,7 +46,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-export default function MultipleSelectChip() {
+const MultipleSelectChip: React.FC<Props> = ({ selected, setValue }) => {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState<string[]>([]);
 
@@ -49,9 +54,10 @@ export default function MultipleSelectChip() {
     const {
       target: { value },
     } = event;
-    setPersonName(
+    console.log(value);
+    setValue(
       // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+      typeof value === "string" ? value : value[0]
     );
   };
 
@@ -62,7 +68,7 @@ export default function MultipleSelectChip() {
         labelId="demo-multiple-chip-label"
         id="demo-multiple-chip"
         multiple
-        value={personName}
+        value={[selected]}
         onChange={handleChange}
         input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
         renderValue={(selected) => (
@@ -86,4 +92,6 @@ export default function MultipleSelectChip() {
       </Select>
     </FormControl>
   );
-}
+};
+
+export default MultipleSelectChip;

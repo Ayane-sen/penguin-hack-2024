@@ -1,10 +1,11 @@
 import { Avatar } from "@mui/material";
 import UserComponent from "./components/User";
-import { User, NextClassInfo } from "./types";
+import { User, NextClassInfo, Student } from "./types";
 import NextClassComponent from "./components/NextClass";
 import { useEffect, useState } from "react";
 import { TroubleshootRounded } from "@mui/icons-material";
 import { Link, Router } from "react-router-dom";
+import { auth } from "./firebase";
 
 const users: Array<User> = [
   {
@@ -37,17 +38,24 @@ const nextClassInfo: { [key: string]: NextClassInfo } = {
 };
 
 const Home = () => {
-  const [students, setStudents] = useState<Array<User>>([]);
+  const [students, setStudents] = useState<Array<Student>>([]);
 
   const getUser = async () => {
-    const res = await fetch(`${process.env.REACT_APP_BASE_URL}/students`);
+    const token = await auth.currentUser?.getIdToken();
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const res = await fetch(`${process.env.REACT_APP_BASE_URL}/students`, {
+      headers,
+    });
     if (!res.ok) {
       console.error("データの取得に失敗しました。");
     }
 
     const data = await res.json();
 
-    setStudents(data as Array<User>);
+    setStudents(data as Array<Student>);
   };
 
   useEffect(() => {

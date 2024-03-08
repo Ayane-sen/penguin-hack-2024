@@ -1,10 +1,10 @@
 import { Avatar } from "@mui/material";
 
-import { User as UserType } from "../types";
+import { Student } from "../types";
 import { FC } from "react";
 
 type Props = {
-  user: UserType;
+  user: Student;
 };
 
 const User: FC<Props> = ({ user }) => {
